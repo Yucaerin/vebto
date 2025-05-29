@@ -8,7 +8,7 @@ EXTENSIONS = ["php", "phtml", "php3", "php5", "php7", "php56", "php74", "php83",
 REGISTER_ENDPOINT = "/auth/register"
 LOGIN_ENDPOINT = "/auth/login"
 UPLOAD_ENDPOINT = "/api/v1/file-entries"
-EMAIL = "yucaerin@hotmail.com"
+EMAIL = "youremail@mail.com"
 PASSWORD = "123123123"
 
 with open("list.txt") as f:
