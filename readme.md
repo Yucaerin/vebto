@@ -56,7 +56,7 @@ Confirmed or potentially affected platforms built by Vebto:
 - 🔁 Mass exploitation with domain list (`list.txt`)
 - 🔐 Auto XSRF token extraction
 - 📝 Auto registration + login
-- 🧠 Smart handling of email verification (manual link input)
+- 🧠 Smart handling of email verification via **link** or **6-digit OTP code**
 - 🐚 Uploads `bq.php` shell as `image/jpeg`
 - 📁 Saves successful shell URLs to `result_upload.txt`
 
@@ -79,11 +79,11 @@ pip install requests
 ## 📁 Structure
 
 ```
-mass_uploader.py        # Main exploit script
-list.txt                # Target domains
-bq.jpg                  # Payload disguised as JPEG
-result_upload.txt       # Shell URLs on success
-result_needs_verification.txt  # Targets requiring manual email verification
+mass_uploader_with_code_verification.py   # Main exploit script
+list.txt                                  # Target domains
+bq.jpg                                    # Payload disguised as JPEG
+result_upload.txt                         # Shell URLs on success
+result_needs_verification.txt             # Targets requiring manual email verification
 ```
 
 ---
@@ -107,15 +107,16 @@ result_needs_verification.txt  # Targets requiring manual email verification
 
 3. Run the script:
     ```bash
-    python3 mass_uploader.py
+    python3 mass_uploader_with_code_verification.py
     ```
 
-4. If target requires email verification:
+4. If the target requires email verification:
     - Script will prompt:
       ```
-      Enter the email verification link:
+      ❓ Is the verification via link or code? (link/code):
       ```
-    - Paste the link received by email (can be from temp email).
+    - If "link", paste the verification URL from email.
+    - If "code", input the 6-digit OTP.
 
 5. On success, shell URL will be saved to `result_upload.txt`.
 
